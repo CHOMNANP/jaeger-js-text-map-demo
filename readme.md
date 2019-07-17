@@ -1,5 +1,5 @@
 
-#Run command bellow to install Jaegertracing
+Run command bellow to install Jaegertracing
 ````
 docker run -d --name jaeger \
   -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 \
@@ -14,11 +14,13 @@ docker run -d --name jaeger \
   ```
 
 1. git clone 
-2. run command 
+2. run command bellow to start service 1
 ````
 node service1.js
 ````
-3. run command bellow to start node 2
+3. run command bellow to start service 2
 ````
 node service2.js
 ````
+
+Expected result Go to http://localhost:16686 to search for the trace. Expected output should be 1 trace with 3 span
