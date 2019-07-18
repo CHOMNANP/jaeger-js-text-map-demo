@@ -1,6 +1,6 @@
 //៊៊https://github.com/opentracing/opentracing-javascript/blob/master/src/test/opentracing_api.ts
 
-const { initTracer } = require("./lib/tracing");
+const { initTracer, getTextCarrierBySpanObject } = require("./lib/tracing");
 const { FORMAT_TEXT_MAP } = require('opentracing');
 const { Tags, FORMAT_HTTP_HEADERS } = require('opentracing');
 
@@ -17,17 +17,18 @@ async function main() {
     rootSpan.setTag("processing document id", 25);
 
     rootContext = rootSpan.context();
-    const traceId = rootContext._traceId.toString('hex');
-    const spanId = rootContext._spanId.toString('hex');
-    const uberTraceId = `${traceId}:${spanId}:0:1`;
-    console.log("uberTraceId===> ", uberTraceId)
+    // console.log("Contet", rootContext)
+    // const traceId = rootContext._traceId.toString('hex');
+    // const spanId = rootContext._spanId.toString('hex');
+    // const uberTraceId = `${traceId}:${spanId}:0:1`;
+    // console.log("uberTraceId===> ", uberTraceId)
 
-    const textCarrier = {
-        "uber-trace-id": uberTraceId
-    };
+    // const textCarrier = {
+    //     "uber-trace-id": uberTraceId
+    // };
 
     //--start of Service 2 span
-    const service2Span = Tracer.startSpan('service-2', {
+    const service2Span = Tracer.startSpan('service-', {
         childOf: rootSpan
     });
     await delay(20);
@@ -37,6 +38,7 @@ async function main() {
     //--end of Service 2 span 
 
     //--start of Injection    
+    const textCarrier = getTextCarrierBySpanObject(rootSpan);
     Tracer.inject(rootSpan.context(), FORMAT_TEXT_MAP, textCarrier)
     //--end of Injection
 
@@ -49,7 +51,7 @@ async function main() {
             process.exit()
         });
     },
-        10000
+        1000
     )
 }
 
