@@ -17,15 +17,6 @@ async function main() {
     rootSpan.setTag("processing document id", 25);
 
     rootContext = rootSpan.context();
-    // console.log("Contet", rootContext)
-    // const traceId = rootContext._traceId.toString('hex');
-    // const spanId = rootContext._spanId.toString('hex');
-    // const uberTraceId = `${traceId}:${spanId}:0:1`;
-    // console.log("uberTraceId===> ", uberTraceId)
-
-    // const textCarrier = {
-    //     "uber-trace-id": uberTraceId
-    // };
 
     //--start of Service 2 span
     const service2Span = Tracer.startSpan('service-', {
