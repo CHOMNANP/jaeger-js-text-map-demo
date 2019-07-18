@@ -3,10 +3,12 @@
 const { initTracer } = require("./lib/tracing");
 const { FORMAT_TEXT_MAP } = require('opentracing');
 
-const Tracer = initTracer("processing-1");
+const Tracer = initTracer("processing-2");
+
+
 
 const textCarrier = {
-    id: 123
+    "uber-trace-id": process.argv[2]
 };
 
 let extracedContext = Tracer.extract(FORMAT_TEXT_MAP, textCarrier);

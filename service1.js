@@ -2,21 +2,29 @@
 
 const { initTracer } = require("./lib/tracing");
 const { FORMAT_TEXT_MAP } = require('opentracing');
+const { Tags, FORMAT_HTTP_HEADERS } = require('opentracing');
+
 const { delay } = require('./lib/delay');
 
 const Tracer = initTracer("processing-1");
 
-const textCarrier = {
-    id: 123
-};
 
 async function main() {
-
 
     //-- start of Root span
     const rootSpan = Tracer.startSpan('service-1');
     await delay(100);
     rootSpan.setTag("processing document id", 25);
+
+    rootContext = rootSpan.context();
+    const traceId = rootContext._traceId.toString('hex');
+    const spanId = rootContext._spanId.toString('hex');
+    const uberTraceId = `${traceId}:${spanId}:0:1`;
+    console.log("uberTraceId===> ", uberTraceId)
+
+    const textCarrier = {
+        "uber-trace-id": uberTraceId
+    };
 
     //--start of Service 2 span
     const service2Span = Tracer.startSpan('service-2', {
@@ -31,18 +39,6 @@ async function main() {
     //--start of Injection    
     Tracer.inject(rootSpan.context(), FORMAT_TEXT_MAP, textCarrier)
     //--end of Injection
-
-    //// ---- You can uncommend this to try if the text mapping is working within one node
-    // //Exract Tracer
-    // let extractedContext = Tracer.extract(FORMAT_TEXT_MAP, textCarrier);
-    // console.log("=========>extractedContext", extractedContext)
-    // var childSpance = Tracer.startSpan('', {
-    //     childOf: extractedContext
-    // });
-
-    // child.finish();
-    // ///
-
 
     setTimeout(() => {
 
